@@ -13,7 +13,7 @@ class MenuInterface:
     text_box_frame = ttk.Frame(root, padding=50)
     new_expenditure_window = None
     # This variable is used to indicate which row the next text box should be placed on
-    next_row = 8
+    next_row = 9
 
     # Dictionary for hexidecimal colors to make color picking easier
     colors = {
@@ -21,6 +21,8 @@ class MenuInterface:
     }
 
     def __init__(self):
+
+        self.tbs = []
 
         # Create a default style for the frames
         s1 = ttk.Style()
@@ -42,10 +44,24 @@ class MenuInterface:
         # Add common text boxes that the user will need
         self.text_box_frame.grid(column=3, row=3)
         self.add_text_box("Yearly Salary", self.text_box_frame, 0, 3)
-        self.add_text_box("Monthy Food Expense", self.text_box_frame, 0, 5)
-        self.add_text_box("Monthly Allowance", self.text_box_frame, 0, 7)
+        self.add_text_box("Monthly Rent", self.text_box_frame, 0, 5)
+        self.add_text_box("Monthy Food Expense", self.text_box_frame, 0, 7)
+        self.add_text_box("Monthly Allowance", self.text_box_frame, 0, 9)
+
+        # Add submission button to make budget calculation
+        submit_button = Button(self.root, text="Submit", command=self.calculate_budget).grid(column=3)
 
 
+    def calculate_budget(self):
+
+        # This salary is for testing purposes and will be modified to reflex state and local taxes
+        salary = float(self.tbs[0].get("1.0", END))
+        salary /= 12
+        for i in range(1, len(self.tbs)):
+            salary -= float(self.tbs[i].get("1.0", END))
+
+        salary = float("{:.2f}".format(salary))
+        print(f"Remaining income after expenses {salary}")
 
     """
         This function adds text boxes which the user will input various monthly expenditures
@@ -64,6 +80,8 @@ class MenuInterface:
         text_box.grid(column=c, row=r+1)
         text_box.insert(INSERT, "")
         text_box.config(state='normal')
+
+        self.tbs.append(text_box)
 
 
 
