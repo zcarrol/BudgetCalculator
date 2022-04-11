@@ -17,8 +17,8 @@ class MenuInterface:
 
         # root is the main window that ecapsulates the buttons and boxes
         self.root = Tk(className=' Budget Calculator')
-        self.main_frame = ttk.Frame(self.root, padding=50)
-        self.text_box_frame = ttk.Frame(self.main_frame, padding=50)
+        self.main_frame = ttk.Frame(self.root, padding=10)
+        self.text_box_frame = ttk.Frame(self.main_frame, padding=20)
         self.new_expenditure_window = None
 
         # next_row is used to indicate which row the next text box should be placed on
@@ -29,36 +29,35 @@ class MenuInterface:
             "turq" : "#00cc99"
         }
 
-        # Make main_frame visible
-        self.main_frame.grid()
-
         # Create a default style for the frames
         s1 = ttk.Style()
         s1.configure('TFrame', background=self.colors["turq"])
 
-
         # Set the root size, color, and name
         Label(self.root, text="Budget Calculator", foreground="black")
-        self.root.geometry("500x500")
+        #self.root.geometry("500x500")
         self.root.configure(background=self.colors["turq"])
+
+        # Make main_frame visible
+        self.main_frame.pack()
 
 
         # Add button to allow user to add extra monthly expenditures
         # First line just adds some padding
-        Label(self.text_box_frame, text="", background=self.colors["turq"]).grid(column=0, row=0)
-        new_tb_button = Button(self.text_box_frame, text="Add New Expenditure", command=self.new_tb_name_select_window).grid(column=0, row=1)
+        Label(self.text_box_frame, text="", background=self.colors["turq"]).pack(side=TOP)
+        new_tb_button = Button(self.text_box_frame, text="Add New Expenditure", command=self.new_tb_name_select_window).pack(side=BOTTOM)
 
 
         # Add common text boxes that the user will need
-        self.text_box_frame.grid(column=0, row=0)
-        self.add_text_box("Yearly Salary", self.text_box_frame, 0, 3)
-        self.add_text_box("Monthly Rent", self.text_box_frame, 0, 5)
-        self.add_text_box("Monthy Food Expense", self.text_box_frame, 0, 7)
-        self.add_text_box("Monthly Allowance", self.text_box_frame, 0, 9)
+        self.text_box_frame.pack()
+        self.add_text_box("Yearly Salary", self.text_box_frame)
+        self.add_text_box("Monthly Rent", self.text_box_frame)
+        self.add_text_box("Monthy Food Expense", self.text_box_frame)
+        self.add_text_box("Monthly Allowance", self.text_box_frame)
 
         # Add submission button to make budget calculation
         # Submission button is added to root so that adding new fields pushes the button down where it should be
-        submit_button = Button(self.main_frame, text="Submit", command=self.calculate_budget).grid(column=0)
+        submit_button = Button(self.main_frame, text="Submit", command=self.calculate_budget).pack()
 
 
     def calculate_budget(self):
@@ -76,7 +75,7 @@ class MenuInterface:
         This function adds text boxes which the user will input various monthly expenditures
         and these values will be used to calculate remaining money 
     """
-    def add_text_box(self, label, frame, c, r):
+    def add_text_box(self, label, frame):
 
         text_box = Text(
             frame,
@@ -84,9 +83,9 @@ class MenuInterface:
             width=20
         )
 
-        label = ttk.Label(frame, text=label, foreground="black", background=self.colors["turq"], wraplength=150).grid(column=c, row=r)
+        label = ttk.Label(frame, text=label, foreground="black", background=self.colors["turq"], wraplength=150).pack(side=TOP)
 
-        text_box.grid(column=c, row=r+1)
+        text_box.pack(side=TOP)
         text_box.insert(INSERT, "")
         text_box.config(state='normal')
 
@@ -102,17 +101,17 @@ class MenuInterface:
 
         # Add label for the text box
         label = ttk.Label(self.new_expenditure_window.win, text="Enter Expenditure Name", foreground="black", background=self.colors["turq"])
-        label.grid(column=0,row=0)
+        label.pack(side=TOP)
 
         #Add text box to window
         new_field_name = StringVar()
         text_box = Entry(self.new_expenditure_window.win, textvariable=new_field_name)
-        text_box.grid(column=0, row=1)
+        text_box.pack(side=TOP, pady=10)
         self.new_expenditure_window.add_text_box("New Expenditure", new_field_name)
 
         # Add enter button
-        btn = Button(self.new_expenditure_window.win, text="Enter", command=self.get_text_box_entry, padx=20)
-        btn.grid(column=0,row=2)
+        btn = Button(self.new_expenditure_window.win, text="Enter", command=self.get_text_box_entry, padx=20, pady=5)
+        btn.pack(side=TOP, pady=10)
 
 
     """
@@ -121,11 +120,10 @@ class MenuInterface:
 
     def get_text_box_entry(self):
         entry = self.new_expenditure_window.tbs["New Expenditure"].get()
-        print(entry)
         self.next_row = self.next_row+2
         self.new_expenditure_window.win.destroy()
         self.new_expenditure_window = None
-        self.add_text_box(entry, self.text_box_frame, 0, self.next_row)
+        self.add_text_box(entry, self.text_box_frame)
 
 class TopLevelWindow:
 
