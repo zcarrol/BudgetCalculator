@@ -8,8 +8,8 @@
 from tkinter import *
 from tkinter import ttk
 
-class MenuInterface:
 
+class MenuInterface:
 
     def __init__(self):
 
@@ -17,7 +17,8 @@ class MenuInterface:
 
         # root is the main window that ecapsulates the buttons and boxes
         self.root = Tk(className=' Budget Calculator')
-        self.text_box_frame = ttk.Frame(self.root, padding=50)
+        self.main_frame = ttk.Frame(self.root, padding=50)
+        self.text_box_frame = ttk.Frame(self.main_frame, padding=50)
         self.new_expenditure_window = None
 
         # next_row is used to indicate which row the next text box should be placed on
@@ -27,6 +28,9 @@ class MenuInterface:
         self.colors = {
             "turq" : "#00cc99"
         }
+
+        # Make main_frame visible
+        self.main_frame.grid()
 
         # Create a default style for the frames
         s1 = ttk.Style()
@@ -54,7 +58,7 @@ class MenuInterface:
 
         # Add submission button to make budget calculation
         # Submission button is added to root so that adding new fields pushes the button down where it should be
-        submit_button = Button(self.root, text="Submit", command=self.calculate_budget).grid(column=0)
+        submit_button = Button(self.main_frame, text="Submit", command=self.calculate_budget).grid(column=0)
 
 
     def calculate_budget(self):
