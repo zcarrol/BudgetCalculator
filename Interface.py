@@ -7,6 +7,7 @@
 
 from tkinter import *
 from tkinter import ttk
+import TopLevelWindow
 
 
 class MenuInterface:
@@ -17,6 +18,7 @@ class MenuInterface:
 
         # root is the main window that ecapsulates the buttons and boxes
         self.root = Tk(className=' Budget Calculator')
+        self.root.resizable(False, False)
         self.main_frame = ttk.Frame(self.root, padding=10)
         self.text_box_frame = ttk.Frame(self.main_frame, padding=20)
         self.new_expenditure_window = None
@@ -59,17 +61,35 @@ class MenuInterface:
         # Submission button is added to root so that adding new fields pushes the button down where it should be
         submit_button = Button(self.main_frame, text="Submit", command=self.calculate_budget).pack()
 
+    def check_text_box_values(self):
+        for tb in self.tbs:
+            if not tb.get("2.0", END).isdigit():
+                print(tb.get("1.0", END))
+                for char in tb.get("1.0", END):
+                    print(char)
+                return False
+
+        return True
 
     def calculate_budget(self):
 
-        # This salary is for testing purposes and will be modified to reflex state and local taxes
-        salary = float(self.tbs[0].get("1.0", END))
-        salary /= 12
-        for i in range(1, len(self.tbs)):
-            salary -= float(self.tbs[i].get("1.0", END))
+        # Make sure that all the members in tbs are integers or floats
+        if self.check_text_box_values():
 
-        salary = float("{:.2f}".format(salary))
-        print(f"Remaining income after expenses {salary}")
+            # This salary is for testing purposes and will be modified to reflex state and local taxes
+            salary = float(self.tbs[0].get("1.0", END))
+            salary /= 12
+            for i in range(1, len(self.tbs)):
+                salary -= float(self.tbs[i].get("1.0", END))
+
+            salary = float("{:.2f}".format(salary))
+            print(f"Remaining income after expenses {salary}")
+
+        else:
+            # Print useful error message to user
+            winPtr = Toplevel(self.root)
+            error_win = TopLevelWindow.TopLevelWindow(winPtr, "400x50", self.colors["turq"])
+            ttk.Label(error_win.win, text="Error: Please make sure entries are numbers", font=("8"), background=self.colors["turq"]).pack()
 
     """
         This function adds text boxes which the user will input various monthly expenditures
@@ -98,7 +118,7 @@ class MenuInterface:
 
         # Spawn new tk window
         winPtr = Toplevel(self.root)
-        self.new_expenditure_window = TopLevelWindow(winPtr, "200x100", self.colors["turq"])
+        self.new_expenditure_window = TopLevelWindow.TopLevelWindow(winPtr, "200x100", self.colors["turq"])
 
         # Add label for the text box
         label = ttk.Label(self.new_expenditure_window.win, text="Enter Expenditure Name", foreground="black", background=self.colors["turq"])
@@ -121,22 +141,7 @@ class MenuInterface:
 
     def get_text_box_entry(self):
         entry = self.new_expenditure_window.tbs["New Expenditure"].get()
-        self.next_row = self.next_row+2
+        #self.next_row = self.next_row+2
         self.new_expenditure_window.win.destroy()
         self.new_expenditure_window = None
         self.add_text_box(entry, self.text_box_frame)
-
-class TopLevelWindow:
-
-    def __init__(self, win, geometry, color):
-        # Set up new top level window
-        self.win = win
-        self.win.grab_set()
-        self.win.geometry(geometry)
-        self.win.configure(background=color)
-        # Dictionary of Name : Textbox pointer to make working with text boxes easier
-        self.tbs = {}
-
-    def add_text_box(self, name, tb):
-        self.tbs[name] = tb
-
