@@ -1,5 +1,8 @@
 """
     This is the class that contains all of the tkinter menu operations
+
+    Organizing all the menu operations within a single objects allows for tkinter to access the components it will
+    need
 """
 
 from tkinter import *
@@ -8,21 +11,22 @@ from tkinter import ttk
 class MenuInterface:
 
 
-    # The main window that ecapsulates the buttons and boxes
-    root = Tk(className=' Budget Calculator')
-    text_box_frame = ttk.Frame(root, padding=50)
-    new_expenditure_window = None
-    # This variable is used to indicate which row the next text box should be placed on
-    next_row = 9
-
-    # Dictionary for hexidecimal colors to make color picking easier
-    colors = {
-        "turq" : "#00cc99"
-    }
-
     def __init__(self):
 
         self.tbs = []
+
+        # root is the main window that ecapsulates the buttons and boxes
+        self.root = Tk(className=' Budget Calculator')
+        self.text_box_frame = ttk.Frame(self.root, padding=50)
+        self.new_expenditure_window = None
+
+        # next_row is used to indicate which row the next text box should be placed on
+        self.next_row = 9
+
+        # Dictionary for hexidecimal colors to make color picking easier
+        self.colors = {
+            "turq" : "#00cc99"
+        }
 
         # Create a default style for the frames
         s1 = ttk.Style()
@@ -42,14 +46,15 @@ class MenuInterface:
 
 
         # Add common text boxes that the user will need
-        self.text_box_frame.grid(column=3, row=3)
+        self.text_box_frame.grid(column=0, row=0)
         self.add_text_box("Yearly Salary", self.text_box_frame, 0, 3)
         self.add_text_box("Monthly Rent", self.text_box_frame, 0, 5)
         self.add_text_box("Monthy Food Expense", self.text_box_frame, 0, 7)
         self.add_text_box("Monthly Allowance", self.text_box_frame, 0, 9)
 
         # Add submission button to make budget calculation
-        submit_button = Button(self.root, text="Submit", command=self.calculate_budget).grid(column=3)
+        # Submission button is added to root so that adding new fields pushes the button down where it should be
+        submit_button = Button(self.root, text="Submit", command=self.calculate_budget).grid(column=0)
 
 
     def calculate_budget(self):
