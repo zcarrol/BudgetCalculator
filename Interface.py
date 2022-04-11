@@ -88,6 +88,7 @@ class MenuInterface:
         text_box.pack(side=TOP)
         text_box.insert(INSERT, "")
         text_box.config(state='normal')
+        ttk.Label(frame, text="", foreground="black", background=self.colors["turq"]).pack(side=TOP)
 
         self.tbs.append(text_box)
 
